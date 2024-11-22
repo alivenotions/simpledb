@@ -18,6 +18,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
+
+    <auto-value.version>1.11.0</auto-value.version>
   </properties>
 
   <dependencyManagement>
@@ -38,6 +40,11 @@
       <artifactId>spotless-maven-plugin</artifactId>
       <version>2.43.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value-annotations</artifactId>
+      <version>${auto-value.version}</version>
+    </dependency>
 
     <!--    test-->
     <dependency>
@@ -50,6 +57,21 @@
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <compilerArgs combine.children="append">
+              <arg>-parameters</arg>
+            </compilerArgs>
+            <annotationProcessorPaths combine.children="append">
+              <path>
+                <groupId>com.google.auto.value</groupId>
+                <artifactId>auto-value</artifactId>
+                <version>${auto-value.version}</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>

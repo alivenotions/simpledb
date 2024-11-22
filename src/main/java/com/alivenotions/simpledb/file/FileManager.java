@@ -59,7 +59,7 @@ public class FileManager {
 
   public synchronized Block append(String filename) throws IOException {
     int newBlock = Math.toIntExact(size(Path.of(filename)));
-    Block block = new Block(filename, newBlock);
+    Block block = Block.of(filename, newBlock);
     byte[] bytes = new byte[blockSize];
     try {
       RandomAccessFile file = getFile(block.fileName());
