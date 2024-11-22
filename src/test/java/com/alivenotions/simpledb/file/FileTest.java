@@ -1,9 +1,13 @@
 package com.alivenotions.simpledb.file;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.alivenotions.simpledb.server.SimpleDB;
+import org.junit.jupiter.api.Test;
 
 public class FileTest {
-  public static void main(String[] args) {
+  @Test
+  public void writing_to_the_db_works() {
+
     SimpleDB db = new SimpleDB("testdb", 400, 8);
     FileManager fileManager = db.fileManager();
 
@@ -19,5 +23,8 @@ public class FileTest {
 
     Page page2 = Page.newPage(fileManager.blockSize());
     fileManager.read(block, page2);
+
+    assertEquals(344, page2.getInt(pos2));
+    assertEquals("abcdefghijklm", page2.getString(pos1));
   }
 }
