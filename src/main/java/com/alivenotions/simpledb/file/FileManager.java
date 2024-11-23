@@ -37,7 +37,7 @@ public class FileManager {
     }
   }
 
-  public synchronized void read(Block block, Page page) {
+  public synchronized void readBlockIntoPage(Block block, Page page) {
     try {
       RandomAccessFile file = getFile(block.fileName());
       file.seek((long) block.number() * blockSize);
@@ -50,7 +50,7 @@ public class FileManager {
     }
   }
 
-  public synchronized void write(Block block, Page page) {
+  public synchronized void writePageToBlock(Block block, Page page) {
     try {
       RandomAccessFile file = getFile(block.fileName());
       file.seek((long) block.number() * blockSize);
@@ -63,7 +63,7 @@ public class FileManager {
     }
   }
 
-  public synchronized Block append(String filename) throws IOException {
+  public synchronized Block appendEmptyBlock(String filename) throws IOException {
     int newBlock = Math.toIntExact(size(Path.of(filename)));
     Block block = Block.of(filename, newBlock);
     byte[] bytes = new byte[blockSize];
@@ -71,8 +71,6 @@ public class FileManager {
       RandomAccessFile file = getFile(block.fileName());
       file.seek((long) block.number() * blockSize);
       file.write(bytes);
-
-      fileStatistics.get(block.fileName()).incrementBlocksWritten();
     } catch (IOException e) {
       throw new RuntimeException("cannot append in block" + block);
     }

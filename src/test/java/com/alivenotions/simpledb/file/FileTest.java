@@ -21,10 +21,10 @@ public class FileTest {
     int size = Page.maxLength("abcdefghijklm".length());
     int pos2 = pos1 + size;
     page1.setInt(pos2, 344);
-    fileManager.write(block, page1);
+    fileManager.writePageToBlock(block, page1);
 
     Page page2 = Page.newPage(fileManager.blockSize());
-    fileManager.read(block, page2);
+    fileManager.readBlockIntoPage(block, page2);
 
     assertEquals(344, page2.getInt(pos2));
     assertEquals("abcdefghijklm", page2.getString(pos1));
@@ -43,13 +43,13 @@ public class FileTest {
     int size = Page.maxLength("abcdefghijklm".length());
     int pos2 = pos1 + size;
     page1.setInt(pos2, 344);
-    fileManager.write(block, page1);
+    fileManager.writePageToBlock(block, page1);
 
     Page page2 = Page.newPage(fileManager.blockSize());
-    fileManager.read(block, page2);
+    fileManager.readBlockIntoPage(block, page2);
 
     Page page3 = Page.newPage(fileManager.blockSize());
-    fileManager.read(block, page3);
+    fileManager.readBlockIntoPage(block, page3);
 
     FileStatistics stats = fileManager.fileStatistics("testfile");
     assertEquals(1, stats.blocksWritten());
