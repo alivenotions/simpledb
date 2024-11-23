@@ -16,6 +16,7 @@ public class FileManager {
   private final int blockSize;
   private final boolean isNew;
   private final Map<String, RandomAccessFile> openFiles = new HashMap<>();
+  private final Map<String, FileStatistics> fileStatistics = new HashMap<>();
 
   public FileManager(File databaseDirectory, int blockSize) {
     this.databaseDirectory = databaseDirectory;
@@ -41,6 +42,9 @@ public class FileManager {
       RandomAccessFile file = getFile(block.fileName());
       file.seek((long) block.number() * blockSize);
       file.getChannel().read(page.contents());
+
+      fileStatistics.get(block.fileName()).incrementBlocksRead();
+
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -52,6 +56,8 @@ public class FileManager {
       file.seek((long) block.number() * blockSize);
       // Should we return the number of bytes written?
       file.getChannel().write(page.contents());
+
+      fileStatistics.get(block.fileName()).incrementBlocksWritten();
     } catch (IOException e) {
       throw new RuntimeException("cannot write to block" + block);
     }
@@ -65,6 +71,8 @@ public class FileManager {
       RandomAccessFile file = getFile(block.fileName());
       file.seek((long) block.number() * blockSize);
       file.write(bytes);
+
+      fileStatistics.get(block.fileName()).incrementBlocksWritten();
     } catch (IOException e) {
       throw new RuntimeException("cannot append in block" + block);
     }
@@ -88,12 +96,21 @@ public class FileManager {
     return blockSize;
   }
 
-  private RandomAccessFile getFile(String filename) throws FileNotFoundException {
-    RandomAccessFile file = openFiles.get(filename);
+  public FileStatistics fileStatistics(String fileName) {
+    FileStatistics stats = fileStatistics.get(fileName);
+    if (stats == null) {
+      throw new IllegalArgumentException("No statistics for file " + fileName);
+    }
+    return stats;
+  }
+
+  private RandomAccessFile getFile(final String fileName) throws FileNotFoundException {
+    RandomAccessFile file = openFiles.get(fileName);
     if (file == null) {
-      File table = new File(databaseDirectory, filename);
+      File table = new File(databaseDirectory, fileName);
       file = new RandomAccessFile(table, "rws");
-      openFiles.put(filename, file);
+      openFiles.put(fileName, file);
+      fileStatistics.put(fileName, new FileStatistics(fileName));
     }
     return file;
   }
