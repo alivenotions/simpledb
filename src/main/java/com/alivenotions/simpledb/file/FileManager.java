@@ -1,12 +1,9 @@
 package com.alivenotions.simpledb.file;
 
-import static java.nio.file.Files.size;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -63,9 +60,9 @@ public class FileManager {
     }
   }
 
-  public synchronized Block appendEmptyBlock(String filename) throws IOException {
-    int newBlock = Math.toIntExact(size(Path.of(filename)));
-    Block block = Block.of(filename, newBlock);
+  public synchronized Block appendEmptyBlock(String filename) {
+    int newBlockNumber = length(filename);
+    Block block = Block.of(filename, newBlockNumber);
     byte[] bytes = new byte[blockSize];
     try {
       RandomAccessFile file = getFile(block.fileName());
