@@ -12,8 +12,8 @@ public class Page {
     buffer = ByteBuffer.wrap(bytes);
   }
 
-  private Page(int blocksize) {
-    buffer = ByteBuffer.allocateDirect(blocksize);
+  private Page(int blockSize) {
+    buffer = ByteBuffer.allocateDirect(blockSize);
   }
 
   public static Page newPage(byte[] bytes) {
