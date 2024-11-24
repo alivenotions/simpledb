@@ -5,7 +5,7 @@ import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.log.LogManager;
 
 public class BufferManager {
-  private Buffer[] bufferPool;
+  private final Buffer[] bufferPool;
   private int numAvailable;
   private static final long MAX_TIME_IN_MS = 10 * 1000;
 
