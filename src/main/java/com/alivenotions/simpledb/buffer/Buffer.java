@@ -4,6 +4,7 @@ import com.alivenotions.simpledb.file.Block;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.file.Page;
 import com.alivenotions.simpledb.log.LogManager;
+import com.alivenotions.simpledb.metadata.BufferStatistics;
 
 public class Buffer {
   private final FileManager fileManager;
