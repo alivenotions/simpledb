@@ -3,6 +3,7 @@ package com.alivenotions.simpledb.buffer;
 import com.alivenotions.simpledb.file.Block;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.log.LogManager;
+import java.time.Clock;
 
 public class BufferManager {
   private final Buffer[] bufferPool;
@@ -29,24 +30,25 @@ public class BufferManager {
     }
   }
 
-  public synchronized void unpin(Buffer buffer) {
+  public synchronized void unpinBuffer(Buffer buffer) {
     buffer.unpin();
     if (!buffer.isPinned()) {
       numAvailable++;
-      // How is this working?
       notifyAll();
     }
   }
 
-  public synchronized Buffer pin(Block block) {
+  public synchronized Buffer pinBufferToBlock(Block block) {
     try {
       long timestamp = System.currentTimeMillis();
       Buffer buffer = tryToPin(block);
       while (buffer == null && !waitingTooLong(timestamp)) {
-        // how is this working?
         wait(MAX_TIME_IN_MS);
         buffer = tryToPin(block);
       }
+      // If the buffer is still null after waiting for the max time,
+      // we assume there's a deadlock and throw an exception for the client
+      // to handle (mostly to try the request again and request buffers again).
       if (buffer == null) {
         throw new BufferAbortException();
       }
@@ -57,7 +59,7 @@ public class BufferManager {
   }
 
   private boolean waitingTooLong(long startTime) {
-    return System.currentTimeMillis() - startTime > MAX_TIME_IN_MS;
+    return Clock.systemUTC().millis() - startTime > MAX_TIME_IN_MS;
   }
 
   private Buffer tryToPin(Block block) {
@@ -89,6 +91,9 @@ public class BufferManager {
   }
 
   private Buffer chooseUnpinnedBuffer() {
+    // This is a naive implementation of buffer selection. Picks the first
+    // unpinned buffer it finds. A more sophisticated approach would be to
+    // choose the least recently used buffer. Or a clock algorithm.
     for (Buffer buffer : bufferPool) {
       if (!buffer.isPinned()) {
         return buffer;
