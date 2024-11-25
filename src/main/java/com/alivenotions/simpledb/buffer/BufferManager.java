@@ -3,15 +3,18 @@ package com.alivenotions.simpledb.buffer;
 import com.alivenotions.simpledb.file.Block;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.log.LogManager;
+import com.alivenotions.simpledb.metadata.BufferStatistics;
 import java.time.Clock;
 
 public class BufferManager {
   private final Buffer[] bufferPool;
   private int numAvailable;
   private static final long MAX_TIME_IN_MS = 10 * 1000;
+  private final BufferStatistics stats;
 
   public BufferManager(FileManager fileManager, LogManager logManager, int numBuffs) {
     this.bufferPool = new Buffer[numBuffs];
+    this.stats = new BufferStatistics();
     numAvailable = numBuffs;
     for (int i = 0; i < numBuffs; i++) {
       bufferPool[i] = new Buffer(fileManager, logManager);
@@ -66,6 +69,7 @@ public class BufferManager {
     Buffer buffer = findExistingBuffer(block);
 
     if (buffer == null) {
+      stats.incrementBuffersMissed();
       buffer = chooseUnpinnedBuffer();
       if (buffer == null) {
         return null;
@@ -73,6 +77,7 @@ public class BufferManager {
       buffer.assignToBlock(block);
     }
 
+    stats.incrementBuffersHit();
     if (!buffer.isPinned()) {
       numAvailable--;
     }

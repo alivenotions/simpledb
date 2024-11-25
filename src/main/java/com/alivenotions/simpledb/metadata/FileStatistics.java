@@ -1,4 +1,4 @@
-package com.alivenotions.simpledb.file;
+package com.alivenotions.simpledb.metadata;
 
 public class FileStatistics {
   private final String fileName;

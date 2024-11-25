@@ -3,6 +3,7 @@ package com.alivenotions.simpledb.file;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.alivenotions.simpledb.metadata.FileStatistics;
 import com.alivenotions.simpledb.server.SimpleDB;
 import java.io.File;
 import org.junit.jupiter.api.AfterEach;

@@ -1,5 +1,6 @@
 package com.alivenotions.simpledb.file;
 
+import com.alivenotions.simpledb.metadata.FileStatistics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
