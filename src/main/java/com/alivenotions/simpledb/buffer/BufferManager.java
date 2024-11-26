@@ -11,10 +11,17 @@ public class BufferManager {
   private int numAvailable;
   private static final long MAX_TIME_IN_MS = 10 * 1000;
   private final BufferStatistics stats;
+  private final BufferReplacementStrategy replacementStrategy;
+  private final int lastUnpinnedBufferIndex = -1;
 
-  public BufferManager(FileManager fileManager, LogManager logManager, int numBuffs) {
+  public BufferManager(
+      FileManager fileManager,
+      LogManager logManager,
+      int numBuffs,
+      BufferReplacementStrategy replacementStrategy) {
     this.bufferPool = new Buffer[numBuffs];
     this.stats = new BufferStatistics();
+    this.replacementStrategy = replacementStrategy;
     numAvailable = numBuffs;
     for (int i = 0; i < numBuffs; i++) {
       bufferPool[i] = new Buffer(fileManager, logManager);
@@ -96,14 +103,32 @@ public class BufferManager {
   }
 
   private Buffer chooseUnpinnedBuffer() {
-    // This is a naive implementation of buffer selection. Picks the first
-    // unpinned buffer it finds. A more sophisticated approach would be to
-    // choose the least recently used buffer. Or a clock algorithm.
+    return switch (replacementStrategy) {
+      case NAIVE -> chooseUnpinnedBufferNaively();
+      case LRU -> chooseLeastRecentlyUsedUnpinnedBuffer();
+      case CLOCK -> chooseClockAlgorithmBuffer();
+      case LRU_K -> chooseLeastRecentlyUsedWithFrequencyUnpinnedBuffer();
+    };
+  }
+
+  private Buffer chooseUnpinnedBufferNaively() {
     for (Buffer buffer : bufferPool) {
       if (!buffer.isPinned()) {
         return buffer;
       }
     }
+    return null;
+  }
+
+  private Buffer chooseLeastRecentlyUsedUnpinnedBuffer() {
+    return null;
+  }
+
+  private Buffer chooseClockAlgorithmBuffer() {
+    return null;
+  }
+
+  private Buffer chooseLeastRecentlyUsedWithFrequencyUnpinnedBuffer() {
     return null;
   }
 }

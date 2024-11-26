@@ -4,7 +4,7 @@ import com.alivenotions.simpledb.file.Block;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.file.Page;
 import com.alivenotions.simpledb.log.LogManager;
-import com.alivenotions.simpledb.metadata.BufferStatistics;
+import java.time.Clock;
 
 public class Buffer {
   private final FileManager fileManager;
@@ -14,6 +14,7 @@ public class Buffer {
   private int pins = 0;
   private int txNum = -1;
   private int lsn = -1;
+  private long lastUnpinned = -1;
 
   public Buffer(FileManager fileManager, LogManager logManager) {
     this.fileManager = fileManager;
@@ -64,5 +65,13 @@ public class Buffer {
 
   void unpin() {
     pins--;
+  }
+
+  public long lastUnpinned() {
+    return lastUnpinned;
+  }
+
+  public void updateLastUnpinned(long lastUnpinned) {
+    this.lastUnpinned = lastUnpinned;
   }
 }
