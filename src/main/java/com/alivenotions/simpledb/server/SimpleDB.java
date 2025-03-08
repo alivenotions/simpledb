@@ -3,6 +3,8 @@ package com.alivenotions.simpledb.server;
 import com.alivenotions.simpledb.buffer.BufferManager;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.log.LogManager;
+import com.alivenotions.simpledb.transaction.Transaction;
+
 import java.io.File;
 
 public class SimpleDB {
@@ -28,5 +30,9 @@ public class SimpleDB {
 
   public BufferManager bufferManager() {
     return bufferManager;
+  }
+
+  public Transaction beginTransaction() {
+    return new Transaction(fileManager, logManager, bufferManager);
   }
 }
