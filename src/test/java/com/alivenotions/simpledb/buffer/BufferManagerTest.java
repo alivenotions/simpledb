@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class BufferTest {
+public class BufferManagerTest {
   private BufferManager bufferManager;
   private SimpleDB db;
 
@@ -75,7 +75,7 @@ public class BufferTest {
   void reuses_buffer_when_pinned_to_same_block() {
     Buffer buffer1 = bufferManager.pinBufferToBlock(Block.of("testfile", 1));
     Buffer buffer2 = bufferManager.pinBufferToBlock(Block.of("testfile", 1));
-    Buffer buffer3 = bufferManager.pinBufferToBlock(Block.of("testfile", 2));
+    bufferManager.pinBufferToBlock(Block.of("testfile", 2));
 
     assertEquals(buffer1, buffer2);
     assertEquals(1, bufferManager.available());

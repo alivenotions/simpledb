@@ -4,7 +4,6 @@ import com.alivenotions.simpledb.file.Block;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.file.Page;
 import com.alivenotions.simpledb.log.LogManager;
-import com.alivenotions.simpledb.metadata.BufferStatistics;
 
 public class Buffer {
   private final FileManager fileManager;
@@ -31,7 +30,6 @@ public class Buffer {
 
   public void setModified(int txNum, int lsn) {
     this.txNum = txNum;
-    // How is negative passed here and how does that help?
     if (lsn >= 0) this.lsn = lsn;
   }
 
