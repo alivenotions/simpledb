@@ -32,8 +32,14 @@ public class Transaction {
     return -1;
   }
 
-  public String getString(Block block, int offset, int val, boolean okToLog) {
+  public void setInt(Block block, int offset, int val, boolean okToLog) {
+  }
+
+  public String getString(Block block, int offset) {
     return null;
+  }
+
+  public void setString(Block block, int offset, String val, boolean okToLog) {
   }
 
   public int availableBuffers() {
