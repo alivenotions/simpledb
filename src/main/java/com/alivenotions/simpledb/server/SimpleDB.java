@@ -1,6 +1,7 @@
 package com.alivenotions.simpledb.server;
 
 import com.alivenotions.simpledb.buffer.BufferManager;
+import com.alivenotions.simpledb.buffer.BufferReplacementStrategy;
 import com.alivenotions.simpledb.file.FileManager;
 import com.alivenotions.simpledb.log.LogManager;
 import java.io.File;
@@ -15,7 +16,8 @@ public class SimpleDB {
   public SimpleDB(String dirName, int blockSizeInBytes, int bufferPoolSize) {
     this.fileManager = new FileManager(new File(dirName), blockSizeInBytes);
     this.logManager = new LogManager(fileManager, LOG_FILE_NAME);
-    this.bufferManager = new BufferManager(fileManager, logManager, bufferPoolSize);
+    this.bufferManager =
+        new BufferManager(fileManager, logManager, bufferPoolSize, BufferReplacementStrategy.NAIVE);
   }
 
   public FileManager fileManager() {

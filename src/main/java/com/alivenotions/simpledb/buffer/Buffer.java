@@ -13,6 +13,7 @@ public class Buffer {
   private int pins = 0;
   private int txNum = -1;
   private int lsn = -1;
+  private long lastUnpinnedTime = -1;
 
   public Buffer(FileManager fileManager, LogManager logManager) {
     this.fileManager = fileManager;
@@ -62,5 +63,13 @@ public class Buffer {
 
   void unpin() {
     pins--;
+  }
+
+  public long lastUnpinned() {
+    return lastUnpinnedTime;
+  }
+
+  public void updateLastUnpinned(long lastUnpinned) {
+    this.lastUnpinnedTime = lastUnpinned;
   }
 }
